@@ -29,18 +29,12 @@ def process_orders(app):
             "date": order.date_placed.isoformat(),
         }
 
-
-        app.logger.info("About to POST to: %s/ProcessPayment with payload: %s", app.config["FINANCE_PACKAGE_URL"], payload)
-        try:
-            response = requests.post(
-                app.config["FINANCE_PACKAGE_URL"] + "/ProcessPayment",
-                json=payload
-            )
-            app.logger.info("Response from endpoint: %s", response.text)
-            response.raise_for_status()
-        except Exception as e:
-            app.logger.error("Error during POST to /ProcessPayment: %s", e)
-            raise
+        response = requests.post(
+            app.config["FINANCE_PACKAGE_URL"] + "/ProcessPayment",
+            json=payload
+        )
+        app.logger.info("Response from endpoint: " + response.text)
+        response.raise_for_status()
 
         order.set_as_processed()
         save_order(order)
