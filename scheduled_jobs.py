@@ -39,10 +39,13 @@ def process_orders(app):
             order.set_as_processed()
             save_order(order)
         except Exception:
+            order.set_as_failed()
+            save_order(order)
             app.logger.exception("Error processing order {id}".format(id=order.id))
 
 def get_queue_of_orders_to_process():
+    from data.order import FAILED
     allOrders = get_all_orders()
-    queuedOrders = filter(lambda order: order.date_processed == None, allOrders)
-    sortedQueue = sorted(queuedOrders, key= lambda order: order.date_placed)
+    queuedOrders = filter(lambda order: order.date_processed is None and order.status != FAILED, allOrders)
+    sortedQueue = sorted(queuedOrders, key=lambda order: order.date_placed)
     return list(sortedQueue)
