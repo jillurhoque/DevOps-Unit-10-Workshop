@@ -1,14 +1,11 @@
 # Use official Python base image
-FROM python:3.9-slim-buster as base
+FROM python:3.11-bookworm as base
 
 ENV APP_INSTALL=/app
 ENV PYTHONPATH=${APP_INSTALL}
 ENV PORT=80
 ENV ACCEPT_EULA=Y
 
-## Fix for Debian Buster archive repositories
-RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/sources.list && \
-	sed -i 's|security.debian.org/debian-security|archive.debian.org/debian-security|g' /etc/apt/sources.list
 # Install required tools
 RUN apt-get update && apt-get install curl gnupg apt-transport-https ca-certificates -y
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
